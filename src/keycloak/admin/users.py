@@ -137,20 +137,17 @@ class User(KeycloakAdminBase):
         :param string array groups: Groups for user
         """
         payload = {}
-        for k, v in self.user.items():
-            payload[k] = v
         for key in USER_KWARGS:
             from keycloak.admin.clientroles import to_camel_case
-
             if key in kwargs:
                 payload[to_camel_case(key)] = kwargs[key]
+
         result = self._client.put(
             url=self._client.get_full_url(
                 self.get_path("single", realm=self._realm_name, user_id=self._user_id)
             ),
             data=json.dumps(payload, sort_keys=True),
         )
-        self.get()
         return result
 
     def delete(self):
